@@ -19,10 +19,14 @@ class Server
     std::shared_ptr<BrainEngine> brain;
     int noOfSession;
     bool ready;
+
+    void disconnectAll();
 public:
     Server(std::shared_ptr<boost::asio::io_context> _ioc);
     void acceptConnection();
 
+
 };
+
 
 #endif // SERVER_H

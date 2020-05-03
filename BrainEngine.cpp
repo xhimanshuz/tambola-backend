@@ -15,9 +15,18 @@ int BrainEngine::pickNumber()
 {
     srand(time(0));
 
+    if(cueNumber->size() == 0)
+    {
+        for(int i=0;i<90; i++)
+            cueNumber->push_back(i+1);
+        pickedNumber->clear();
+        return 0;
+    }
     int number = cueNumber->at(rand() % cueNumber->size());
-//    cueNumber->erase(std::find(cueNumber->begin(), cueNumber->end(), number));
+    cueNumber->erase(std::find(cueNumber->begin(), cueNumber->end(), number));
     pickedNumber->push_back(number);
+
+    if(pickedNumber)
     return number;
 }
 

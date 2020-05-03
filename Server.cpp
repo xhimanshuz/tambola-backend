@@ -15,23 +15,25 @@ Server::Server(std::shared_ptr<boost::asio::io_context> _ioc): ioc(_ioc), ready(
                 std::this_thread::sleep_for(10s);
                 continue;
             }
-            auto numberBroadCast = std::to_string(brain->pickNumber())+' ';
+            auto numberBroadCast = std::to_string(brain->pickNumber());
+            if(numberBroadCast == "0")
+                disconnectAll();
             for(auto i: *sessionVector)
             {
-                std::cout<<"Writing to Session\n";
+//                std::cout<<"Writing to Session\n";
                 try
                 {
-                    i->writeData(numberBroadCast);
+                    i->writeData(numberBroadCast+' ');
                 }
                 catch (boost::system::system_error se)
                 {
                     std::cout<< "Writing Error: "<< se.what()<<" FOR SOCKET: "<< i->uid<<std::endl;
-                    i->socket.close();
-                    i.reset();
+                    if(i)
+                        i.reset();
                     sessionVector->erase(std::find(sessionVector->begin(), sessionVector->end(), i));
                 }
             }
-            std::this_thread::sleep_for(2s);
+            std::this_thread::sleep_for(1s);
         }
     }).detach();
     acceptConnection();
@@ -41,13 +43,18 @@ void Server::acceptConnection()
 {
     std::cout<<"WAITING TO ACCEPT CONNECTION"<<std::endl;
     acceptor->async_accept([this](boost::system::error_code ec, boost::asio::ip::tcp::socket socket){
-//        if(sessionVector->size()>4) ready = true;
         try
         {
-        if(!ec)
-            sessionVector->push_back(std::make_shared<Session>(std::move(socket), ++noOfSession));
-        else
-            std::cout<<"Error Code: "<< ec.message()<<std::endl;
+            if(!ec)
+            {
+                auto s = std::make_shared<Session>(std::move(socket), ++noOfSession);
+                sessionVector->push_back(s);
+                s->writeData("YOUR SOCKET NAME IS: "+ std::to_string(s->uid)+'\n');
+                for(auto i: *brain->pickedNumber)
+                    s->writeData(std::to_string(i)+' ');
+            }
+            else
+                std::cout<<"Error Code: "<< ec.message()<<std::endl;
         }
         catch(boost::system::system_error &ec)
         {
@@ -56,5 +63,14 @@ void Server::acceptConnection()
 
         acceptConnection();
     });
-//    acceptConnection();
+    //    acceptConnection();
+}
+
+void Server::disconnectAll()
+{
+    for(auto& session: *sessionVector)
+    {
+        session.reset();
+    }
+    sessionVector->clear();
 }

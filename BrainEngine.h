@@ -9,11 +9,11 @@
 
 class BrainEngine
 {
-    std::shared_ptr<std::vector<int>> pickedNumber;
     std::shared_ptr<std::vector<int>> cueNumber;
 public:
     BrainEngine();
 
+    std::shared_ptr<std::vector<int>> pickedNumber;
     int pickNumber();
     std::string leftedNumber();
 };

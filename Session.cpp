@@ -9,7 +9,7 @@ Session::Session(boost::asio::ip::tcp::socket _socket, uint32_t _uid): socket(st
 
 Session::~Session()
 {
-    printf("SOCKET: %d CLOSED\n", uid);
+    std::cout<<"SOCKET "<< uid<<" CLOSED"<<std::endl;
     socket.close();
 }
 
@@ -33,7 +33,7 @@ std::string Session::readData()
 
 void Session::writeData(const std::string &data)
 {
-    std::cout<< "Data Written: "<< data <<std::endl;
+//    std::cout<< "Data Written: "<< data <<std::endl;
 
     socket.write_some(boost::asio::buffer(data.c_str(), data.size()));
 
