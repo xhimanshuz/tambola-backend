@@ -1,0 +1,60 @@
+    #include "Server.h"
+    using namespace std::literals::chrono_literals;
+    
+    Server::Server(std::shared_ptr<boost::asio::io_context> _ioc): ioc(_ioc), ready(false), noOfSession{0}
+    {
+        acceptor = std::make_shared<boost::asio::ip::tcp::acceptor>(*ioc, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 8000), true);
+        sessionVector = std::make_shared<std::vector<std::shared_ptr<Session>>>();
+        brain = std::make_shared<BrainEngine>();
+    
+        std::thread([this]{
+            while(true)
+            {
+                if(sessionVector->size() < 5)
+                {
+                    std::this_thread::sleep_for(10s);
+                    continue;
+                }
+                auto numberBroadCast = std::to_string(brain->pickNumber())+' ';
+                for(auto i: *sessionVector)
+                {
+                    std::cout<<"Writing to Session\n";
+                    try
+                    {
+                        i->writeData(numberBroadCast);
+                    }
+                    catch (boost::system::system_error se)
+                    {
+                        std::cout<< "Writing Error: "<< se.what()<<" FOR SOCKET: "<< i->uid<<std::endl;
+                        i->socket.close();
+                        i.reset();
+                        sessionVector->erase(std::find(sessionVector->begin(), sessionVector->end(), i));
+                    }
+                }
+                std::this_thread::sleep_for(2s);
+            }
+        }).detach();
+        acceptConnection();
+    }
+    
+    void Server::acceptConnection()
+    {
+        std::cout<<"WAITING TO ACCEPT CONNECTION"<<std::endl;
+        acceptor->async_accept([this](boost::system::error_code ec, boost::asio::ip::tcp::socket socket){
+    //        if(sessionVector->size()>4) ready = true;
+            try
+            {
+            if(!ec)
+                sessionVector->push_back(std::make_shared<Session>(std::move(socket), ++noOfSession));
+            else
+                std::cout<<"Error Code: "<< ec.message()<<std::endl;
+            }
+            catch(boost::system::system_error &ec)
+            {
+                std::cout<<"Error Code: "<< ec.what();
+            }
+    
+            acceptConnection();
+        });
+    //    acceptConnection();
+    }
