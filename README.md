@@ -1,2 +1,2 @@
 # tambola-backend
-Tambola Game backend server
+Tambola Network Server developed with the help of Boost.Asio C++ Library

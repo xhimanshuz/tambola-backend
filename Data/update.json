@@ -1,0 +1,19 @@
+{
+  "type": "update",
+  "update": {
+    "name": "update_name",
+    ...
+  }
+}
+
+
+# Picked Number
+{
+  "type": "update",
+  "timestamp": 1232131233,
+  "name": "numberPicked",
+  "update": {
+    "number": 1,
+    "board_id": "b_12321"
+  }
+}

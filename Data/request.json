@@ -1,0 +1,66 @@
+// Request BASE
+{
+  "type": "event",
+  "event_type": "request",
+  "event": "event_name"
+}
+
+
+# SignIn
+{
+  "type": "event",
+  "event_type": "request",
+  "event": "signIn",
+  "signin_type": "manual",
+  "email": "hi.himanshu14@gmail.com",
+  "password": "12345000"
+}
+
+# SignUp
+{
+"type": "event",
+"event_type": "request",
+"event": "signUp",
+  "signup_type": "manual",
+  "email": "hi.himanshu14@gmail.com",
+  "name": "Himanshu Rastogi",
+  "password": "12345000"
+}
+
+# Get ALL User
+{
+  "type": "event",
+  "event_type": "request",
+  "event": "getAllUsers"
+}
+
+# Create Ticket
+{
+  "type": "event",
+  "event_type": "request",
+  "event": "createTicket",
+  "bid": 123
+}
+
+# Create Board
+{
+  "type": "event",
+  "event_type": "request",
+  "event": "createBoard"
+}
+
+# Pick Number
+{
+  "type": "event",
+  "event_type": "request",
+  "event": "pickNumber"
+}
+
+# Get Current Ticket
+{
+  "type": "event",
+  "event_type": "request",
+  "event": "getTicket"
+}
+
+

@@ -1,0 +1,11 @@
+// RESPONSE BASE
+{
+  "type": "event",
+  "event_type": "response",
+  "event": "event_name",
+  "data": {},
+  "error_code": 0, // 0 = Not Error
+  "error_message": "some message"
+}
+
+
